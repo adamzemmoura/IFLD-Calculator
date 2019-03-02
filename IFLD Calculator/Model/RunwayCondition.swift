@@ -15,4 +15,7 @@ enum RunwayCondition : String {
     case medium = "Medium"
     case mediumToPoor = "Medium - Poor"
     case poor = "Poor"
+    
+    static let options : [RunwayCondition] = [.dry, .good, .goodToMedium, .medium, .mediumToPoor, .poor]
+    
 }

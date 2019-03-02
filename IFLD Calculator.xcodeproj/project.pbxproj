@@ -18,6 +18,9 @@
 		54473024222862D900919DD1 /* ReverseThrustAvailable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54473023222862D900919DD1 /* ReverseThrustAvailable.swift */; };
 		54473026222862EA00919DD1 /* FlapSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54473025222862EA00919DD1 /* FlapSetting.swift */; };
 		544730282228652B00919DD1 /* RunwayCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544730272228652B00919DD1 /* RunwayCondition.swift */; };
+		5447302B222882EE00919DD1 /* gotham rounded in Resources */ = {isa = PBXBuildFile; fileRef = 5447302A222882EE00919DD1 /* gotham rounded */; };
+		5447302F222AC3BC00919DD1 /* WeatherInputData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5447302E222AC3BC00919DD1 /* WeatherInputData.swift */; };
+		54473031222AEB1100919DD1 /* AircraftType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54473030222AEB1100919DD1 /* AircraftType.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,7 +40,7 @@
 		54472FFE22285CD400919DD1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5447300022285CD700919DD1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5447300322285CD700919DD1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		5447300522285CD700919DD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5447300522285CD700919DD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "IFLD Calculator/Info.plist"; sourceTree = "<group>"; };
 		5447300A22285CD700919DD1 /* IFLD CalculatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "IFLD CalculatorTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5447300E22285CD700919DD1 /* IFLD_CalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IFLD_CalculatorTests.swift; sourceTree = "<group>"; };
 		5447301022285CD700919DD1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -46,6 +49,9 @@
 		54473023222862D900919DD1 /* ReverseThrustAvailable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseThrustAvailable.swift; sourceTree = "<group>"; };
 		54473025222862EA00919DD1 /* FlapSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlapSetting.swift; sourceTree = "<group>"; };
 		544730272228652B00919DD1 /* RunwayCondition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunwayCondition.swift; sourceTree = "<group>"; };
+		5447302A222882EE00919DD1 /* gotham rounded */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "gotham rounded"; sourceTree = "<group>"; };
+		5447302E222AC3BC00919DD1 /* WeatherInputData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherInputData.swift; sourceTree = "<group>"; };
+		54473030222AEB1100919DD1 /* AircraftType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AircraftType.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				54472FF822285CD400919DD1 /* IFLD Calculator */,
+				5447300522285CD700919DD1 /* Info.plist */,
 				5447300D22285CD700919DD1 /* IFLD CalculatorTests */,
 				54472FF722285CD400919DD1 /* Products */,
 			);
@@ -87,6 +94,7 @@
 		54472FF822285CD400919DD1 /* IFLD Calculator */ = {
 			isa = PBXGroup;
 			children = (
+				54473029222882A000919DD1 /* Resources */,
 				5447301C22285DA500919DD1 /* Model */,
 				5447301D22285DAB00919DD1 /* View */,
 				5447301922285D7C00919DD1 /* Controller */,
@@ -116,10 +124,8 @@
 		5447301A22285D8C00919DD1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				5447300022285CD700919DD1 /* Assets.xcassets */,
 				54472FF922285CD400919DD1 /* AppDelegate.swift */,
 				5447300222285CD700919DD1 /* LaunchScreen.storyboard */,
-				5447300522285CD700919DD1 /* Info.plist */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -132,6 +138,8 @@
 				54473023222862D900919DD1 /* ReverseThrustAvailable.swift */,
 				54473025222862EA00919DD1 /* FlapSetting.swift */,
 				544730272228652B00919DD1 /* RunwayCondition.swift */,
+				5447302E222AC3BC00919DD1 /* WeatherInputData.swift */,
+				54473030222AEB1100919DD1 /* AircraftType.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -149,6 +157,15 @@
 				54472FFD22285CD400919DD1 /* Main.storyboard */,
 			);
 			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		54473029222882A000919DD1 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5447300022285CD700919DD1 /* Assets.xcassets */,
+				5447302A222882EE00919DD1 /* gotham rounded */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -235,6 +252,7 @@
 				5447300422285CD700919DD1 /* LaunchScreen.storyboard in Resources */,
 				5447300122285CD700919DD1 /* Assets.xcassets in Resources */,
 				54472FFF22285CD400919DD1 /* Main.storyboard in Resources */,
+				5447302B222882EE00919DD1 /* gotham rounded in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,8 +273,10 @@
 				54472FFC22285CD400919DD1 /* ViewController.swift in Sources */,
 				54472FFA22285CD400919DD1 /* AppDelegate.swift in Sources */,
 				54473024222862D900919DD1 /* ReverseThrustAvailable.swift in Sources */,
+				5447302F222AC3BC00919DD1 /* WeatherInputData.swift in Sources */,
 				54473026222862EA00919DD1 /* FlapSetting.swift in Sources */,
 				544730282228652B00919DD1 /* RunwayCondition.swift in Sources */,
+				54473031222AEB1100919DD1 /* AircraftType.swift in Sources */,
 				5447302022285E4100919DD1 /* LandingPerformanceData.swift in Sources */,
 				54473022222862BF00919DD1 /* BrakingConfiguration.swift in Sources */,
 			);
