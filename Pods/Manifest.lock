@@ -1,0 +1,16 @@
+PODS:
+  - CodableFirebase (0.2.1)
+
+DEPENDENCIES:
+  - CodableFirebase
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - CodableFirebase
+
+SPEC CHECKSUMS:
+  CodableFirebase: 0bf201991eeec35eb9fcd987d271ea463cf34a80
+
+PODFILE CHECKSUM: a0e8e150700d9939a6be09b48529439d8da264f2
+
+COCOAPODS: 1.5.3
