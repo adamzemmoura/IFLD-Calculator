@@ -21,6 +21,7 @@
 		5447302B222882EE00919DD1 /* gotham rounded in Resources */ = {isa = PBXBuildFile; fileRef = 5447302A222882EE00919DD1 /* gotham rounded */; };
 		5447302F222AC3BC00919DD1 /* WeatherInputData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5447302E222AC3BC00919DD1 /* WeatherInputData.swift */; };
 		54473031222AEB1100919DD1 /* AircraftType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54473030222AEB1100919DD1 /* AircraftType.swift */; };
+		54BB01F6222D944C0049D0C6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 54BB01F5222D944C0049D0C6 /* GoogleService-Info.plist */; };
 		54D8DADD222D8A20003F34EA /* Runway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D8DADC222D8A20003F34EA /* Runway.swift */; };
 		54D8DADF222D8A78003F34EA /* Airport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D8DADE222D8A78003F34EA /* Airport.swift */; };
 		BFEC9DCFDB0A5E0F333CDBE0 /* Pods_IFLD_CalculatorTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71DBB1BA509AA56F3307A7CB /* Pods_IFLD_CalculatorTests.framework */; };
@@ -59,6 +60,7 @@
 		5447302A222882EE00919DD1 /* gotham rounded */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "gotham rounded"; sourceTree = "<group>"; };
 		5447302E222AC3BC00919DD1 /* WeatherInputData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherInputData.swift; sourceTree = "<group>"; };
 		54473030222AEB1100919DD1 /* AircraftType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AircraftType.swift; sourceTree = "<group>"; };
+		54BB01F5222D944C0049D0C6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		54D8DADC222D8A20003F34EA /* Runway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Runway.swift; sourceTree = "<group>"; };
 		54D8DADE222D8A78003F34EA /* Airport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Airport.swift; sourceTree = "<group>"; };
 		71C8EDDC238F32AD3AA9C581 /* Pods-IFLD CalculatorTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IFLD CalculatorTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-IFLD CalculatorTests/Pods-IFLD CalculatorTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 			children = (
 				54472FF822285CD400919DD1 /* IFLD Calculator */,
 				5447300522285CD700919DD1 /* Info.plist */,
+				54BB01F5222D944C0049D0C6 /* GoogleService-Info.plist */,
 				5447300D22285CD700919DD1 /* IFLD CalculatorTests */,
 				54472FF722285CD400919DD1 /* Products */,
 				F920382061CB917A81D6C4BF /* Pods */,
@@ -294,6 +297,7 @@
 				5447300122285CD700919DD1 /* Assets.xcassets in Resources */,
 				54472FFF22285CD400919DD1 /* Main.storyboard in Resources */,
 				5447302B222882EE00919DD1 /* gotham rounded in Resources */,
+				54BB01F6222D944C0049D0C6 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,10 +319,16 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-IFLD Calculator/Pods-IFLD Calculator-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/CodableFirebase/CodableFirebase.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CodableFirebase.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
