@@ -49,6 +49,12 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBOutlet weak var airportInputBorderView: UIView! {
+        didSet {
+            applyBorderStyles(view: airportInputBorderView)
+        }
+    }
+    
     @IBOutlet weak var windPicker: UIPickerView! {
         didSet {
             // set the middle of the picker data set as default
