@@ -11,13 +11,27 @@ import UIKit
 class ViewController: UIViewController {
     
     // MARK:- Properties
-    private let variants = ["777-200", "777-300", "777-900"]
+    private var airports = [Airport]() {
+        didSet {
+            // update the airports picker
+            airportPicker.reloadAllComponents()
+            airportSelectionTableView.reloadData()
+        }
+    }
+    private var selectedAirport: Airport? = nil {
+        didSet {
+            // every time the selected airport changes, update the runways to correspond
+            runwayPicker.reloadAllComponents()
+            runwayPicker.selectRow(0, inComponent: 0, animated: true)
+            airportTextField.text = selectedAirport?.getName()
+        }
+    }
     
     private struct TableviewCellIdentifiers {
         static let variantCell = "variantTableViewCell"
+        static let airportCell = "airportTableViewCell"
     }
-    
-    
+
     
     // MARK:- Outlets
     @IBOutlet weak var flapSelectionSegmentedControl: UISegmentedControl!
@@ -73,7 +87,33 @@ class ViewController: UIViewController {
     }
     @IBOutlet weak var brakingActionPicker: UIPickerView!
     
+    @IBOutlet weak var airportPicker: UIPickerView! {
+        didSet {
+            airportPicker.delegate = self
+            airportPicker.dataSource = self
+        }
+    }
     
+    @IBOutlet weak var runwayPicker: UIPickerView! {
+        didSet {
+            runwayPicker.delegate = self
+            runwayPicker.dataSource = self
+        }
+    }
+    
+    @IBOutlet weak var airportTextField: UITextField! {
+        didSet {
+            airportTextField.delegate = self
+        }
+    }
+    
+    @IBOutlet weak var airportSelectionTableView: UITableView! {
+        didSet {
+            airportSelectionTableView.dataSource = self
+            airportSelectionTableView.delegate = self
+            airportSelectionTableView.isHidden = true
+        }
+    }
     
     
     
@@ -81,14 +121,17 @@ class ViewController: UIViewController {
     // MARK:- Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        // set delegate on AirportDataStore to subscribe to updates on airports data model
+        AirportDataStore.shared.delegate = self
+        
     }
 
     // MARK:- Helper Methods
-    private func toggleVariantSelectionTableView() {
-        variantSelectionTableView.isHidden = !variantSelectionTableView.isHidden
+    private func toggleViewIsHidden(view: UIView) {
+        view.isHidden = !view.isHidden
     }
-
+    
     private func applyBorderStyles(view: UIView) {
         view.layer.borderWidth = 2
         view.layer.borderColor = UIColor.lightGray.cgColor
@@ -97,14 +140,20 @@ class ViewController: UIViewController {
     }
 
 }
-
+// MARK:- UITextFieldDelegate
 extension ViewController : UITextFieldDelegate {
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         
         if textField == variantSelectionTextField {
-            toggleVariantSelectionTableView()
+            toggleViewIsHidden(view: variantSelectionTableView)
             return false
+        }
+        
+        if textField == airportTextField {
+            toggleViewIsHidden(view: airportSelectionTableView)
+            selectedAirport = nil
+            return true
         }
         
         return true
@@ -112,6 +161,7 @@ extension ViewController : UITextFieldDelegate {
     
 }
 
+// MARK:- UITableViewDelegate
 extension ViewController : UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -119,14 +169,24 @@ extension ViewController : UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedVariant = AircraftType.options[indexPath.row].rawValue
-        tableView.deselectRow(at: indexPath, animated: true)
-        toggleVariantSelectionTableView()
-        variantSelectionTextField.text = selectedVariant
+        
+        if tableView == variantSelectionTableView {
+            let selectedVariant = AircraftType.options[indexPath.row].rawValue
+            tableView.deselectRow(at: indexPath, animated: true)
+            toggleViewIsHidden(view: variantSelectionTableView)
+            variantSelectionTextField.text = selectedVariant
+        }
+        else if tableView == airportSelectionTableView {
+            selectedAirport = airports[indexPath.row]
+            toggleViewIsHidden(view: airportSelectionTableView)
+            airportTextField.resignFirstResponder()
+        }
+        
     }
     
 }
 
+// MARK:- UITableViewDataSource
 extension ViewController : UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -134,19 +194,46 @@ extension ViewController : UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return AircraftType.options.count
+        
+        if tableView == variantSelectionTableView {
+            return AircraftType.options.count
+        }
+        
+        if tableView == airportSelectionTableView {
+            return airports.count
+        }
+        
+        return 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: TableviewCellIdentifiers.variantCell, for: indexPath)
-        let variant = AircraftType.options[indexPath.row]
-        cell.textLabel?.text = variant.rawValue
-        cell.detailTextLabel?.text = AircraftType.engineVariant(aircraftType: variant)
+        
+        var cell = UITableViewCell()
+        var titleText = ""
+        var detailText = ""
+        
+        if tableView == airportSelectionTableView {
+            cell = tableView.dequeueReusableCell(withIdentifier: TableviewCellIdentifiers.airportCell, for: indexPath)
+            let airport = airports[indexPath.row]
+            titleText = airport.getName()
+            detailText = airport.getCode()
+        }
+        else if tableView == variantSelectionTableView {
+            cell = tableView.dequeueReusableCell(withIdentifier: TableviewCellIdentifiers.variantCell, for: indexPath)
+            let variant = AircraftType.options[indexPath.row]
+            titleText = variant.rawValue
+            detailText = AircraftType.engineVariant(aircraftType: variant)
+        }
+        
+        cell.textLabel?.text = titleText
+        cell.detailTextLabel?.text = detailText
+        
         return cell
     }
     
 }
 
+// MARK:- UIPickerViewDataSource
 extension ViewController : UIPickerViewDataSource {
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -180,6 +267,23 @@ extension ViewController : UIPickerViewDataSource {
             return RunwayCondition.options.count
         }
         
+        // airport
+        if pickerView == airportPicker {
+            if airports.count > 0 {
+                return airports.count
+            }
+            return 1 // to allow for default text in picker view
+        }
+        
+        // runways
+        if pickerView == runwayPicker {
+            if let selectedAirport = selectedAirport {
+                return selectedAirport.getRunways().count
+            } else {
+                return 1
+            }
+        }
+        
         return 0
     }
     
@@ -188,6 +292,7 @@ extension ViewController : UIPickerViewDataSource {
     
 }
 
+// MARK:- UIPickerViewDelegate
 extension ViewController : UIPickerViewDelegate {
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
@@ -216,8 +321,46 @@ extension ViewController : UIPickerViewDelegate {
             return RunwayCondition.options[row].rawValue
         }
         
+        // airport
+        if pickerView == airportPicker {
+            if airports.count > 0 {
+                return airports[row].getName()
+            }
+            return "Select"
+        }
+        
+        // runways at airport
+        if pickerView == runwayPicker {
+            
+            // check there is a selectedAirport and get the airport and runways if so
+            if let selectedAirport = selectedAirport {
+                let runways = selectedAirport.getRunways()
+                return runways[row].getName()
+            } else {
+                return "----"
+            }
+            
+        }
+        
         return "Test"
         
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        
+        if pickerView == airportPicker {
+            selectedAirport = airports[row]
+        }
+    }
+    
+}
+
+// MARK:- AirportDataStoreDelegate
+extension ViewController: AirportDataStoreDelegate {
+    
+    func airportDataStoreDidUpdate(airports: [Airport]) {
+        print("DELEGATE RECEIVED AIRPORTS FROM DATA SOURCE")
+        self.airports = airports
     }
     
 }
