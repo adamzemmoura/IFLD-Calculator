@@ -30,10 +30,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="47H-dO-5rM">
-                                <rect key="frame" x="30" y="50" width="964" height="260"/>
+                                <rect key="frame" x="30" y="50" width="964" height="307"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pso-P8-b2W" userLabel="Aircraft Input View Border">
-                                        <rect key="frame" x="0.0" y="0.0" width="340" height="260"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="340" height="307"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="top" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="AUz-sl-kfG" userLabel="Outer Stack">
                                                 <rect key="frame" x="10" y="22.5" width="320" height="210"/>
@@ -145,7 +145,7 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WuD-Ro-x5I" userLabel="Weather Input View Border">
-                                        <rect key="frame" x="364" y="0.0" width="270" height="260"/>
+                                        <rect key="frame" x="361.5" y="0.0" width="270" height="307"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="top" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="cdl-rZ-vI9" userLabel="Outer Stack">
                                                 <rect key="frame" x="10" y="22.5" width="250" height="225"/>
@@ -266,25 +266,22 @@
                                         <viewLayoutGuide key="safeArea" id="YP6-Ym-6TT"/>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FvK-Jm-bzA" userLabel="Airport / Runway Stack">
-                                        <rect key="frame" x="657.5" y="0.0" width="306.5" height="260"/>
+                                        <rect key="frame" x="653" y="0.0" width="311" height="307"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="top" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="kfp-Sr-4yg" userLabel="Outer Stack">
-                                                <rect key="frame" x="10" y="22.5" width="286.5" height="100"/>
+                                                <rect key="frame" x="10" y="22.5" width="291" height="255"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="GQg-Kc-FXV" userLabel="Airport Stack">
-                                                        <rect key="frame" x="0.0" y="0.0" width="286.5" height="45"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="291" height="45"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Airport" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oXf-sI-SMA">
-                                                                <rect key="frame" x="0.0" y="0.0" width="110" height="45"/>
-                                                                <constraints>
-                                                                    <constraint firstAttribute="width" constant="110" id="Tmc-dk-lXR"/>
-                                                                </constraints>
+                                                                <rect key="frame" x="0.0" y="0.0" width="114.5" height="45"/>
                                                                 <fontDescription key="fontDescription" name="GothamRounded-Book" family="Gotham Rounded" pointSize="25"/>
                                                                 <nil key="textColor"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Tap To Select" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uCs-jw-vYF">
-                                                                <rect key="frame" x="130" y="0.0" width="156.5" height="45"/>
+                                                                <rect key="frame" x="134.5" y="0.0" width="156.5" height="45"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="45" id="PGC-Sh-feG"/>
                                                                 </constraints>
@@ -311,19 +308,16 @@
                                                         </variation>
                                                     </stackView>
                                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="rMj-ws-eo6" userLabel="Runway Stack">
-                                                        <rect key="frame" x="0.0" y="55" width="250" height="45"/>
+                                                        <rect key="frame" x="0.0" y="55" width="254.5" height="45"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Runway" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hbu-dT-obh">
-                                                                <rect key="frame" x="0.0" y="0.0" width="110" height="45"/>
-                                                                <constraints>
-                                                                    <constraint firstAttribute="width" constant="110" id="Je3-aJ-q8m"/>
-                                                                </constraints>
+                                                                <rect key="frame" x="0.0" y="0.0" width="114.5" height="45"/>
                                                                 <fontDescription key="fontDescription" name="GothamRounded-Book" family="Gotham Rounded" pointSize="25"/>
                                                                 <nil key="textColor"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uGG-Jw-4cY">
-                                                                <rect key="frame" x="130" y="0.0" width="120" height="45"/>
+                                                                <rect key="frame" x="134.5" y="0.0" width="120" height="45"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" constant="120" id="PmA-Wn-GAV"/>
                                                                     <constraint firstAttribute="height" constant="45" id="fhm-FU-QYj"/>
@@ -335,7 +329,64 @@
                                                             </pickerView>
                                                         </subviews>
                                                     </stackView>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="26" translatesAutoresizingMaskIntoConstraints="NO" id="Irw-C6-fXB">
+                                                        <rect key="frame" x="0.0" y="120" width="232" height="25"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Distance" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dZu-ra-ln7">
+                                                                <rect key="frame" x="0.0" y="0.0" width="114.5" height="25"/>
+                                                                <fontDescription key="fontDescription" name="GothamRounded-Book" family="Gotham Rounded" pointSize="25"/>
+                                                                <nil key="textColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3500m" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ciR-5g-Cob">
+                                                                <rect key="frame" x="140.5" y="0.0" width="91.5" height="25"/>
+                                                                <fontDescription key="fontDescription" name="GothamRounded-Bold" family="Gotham Rounded" pointSize="25"/>
+                                                                <nil key="textColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                        </subviews>
+                                                    </stackView>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="26" translatesAutoresizingMaskIntoConstraints="NO" id="lyL-Jv-C9y">
+                                                        <rect key="frame" x="0.0" y="175" width="180.5" height="25"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Slope" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gaN-48-kp4">
+                                                                <rect key="frame" x="0.0" y="0.0" width="114.5" height="25"/>
+                                                                <fontDescription key="fontDescription" name="GothamRounded-Book" family="Gotham Rounded" pointSize="25"/>
+                                                                <nil key="textColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yhP-lQ-8bv">
+                                                                <rect key="frame" x="140.5" y="0.0" width="40" height="25"/>
+                                                                <fontDescription key="fontDescription" name="GothamRounded-Bold" family="Gotham Rounded" pointSize="25"/>
+                                                                <nil key="textColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                        </subviews>
+                                                    </stackView>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="26" translatesAutoresizingMaskIntoConstraints="NO" id="D5D-nH-7Wk">
+                                                        <rect key="frame" x="0.0" y="230" width="192" height="25"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Elevation" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ci9-cD-GEe">
+                                                                <rect key="frame" x="0.0" y="0.0" width="114.5" height="25"/>
+                                                                <fontDescription key="fontDescription" name="GothamRounded-Book" family="Gotham Rounded" pointSize="25"/>
+                                                                <nil key="textColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="83ft" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jfk-AI-sd2">
+                                                                <rect key="frame" x="140.5" y="0.0" width="51.5" height="25"/>
+                                                                <fontDescription key="fontDescription" name="GothamRounded-Bold" family="Gotham Rounded" pointSize="25"/>
+                                                                <nil key="textColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                        </subviews>
+                                                    </stackView>
                                                 </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="ci9-cD-GEe" firstAttribute="width" secondItem="oXf-sI-SMA" secondAttribute="width" id="IAA-Yf-VVB"/>
+                                                    <constraint firstItem="dZu-ra-ln7" firstAttribute="width" secondItem="oXf-sI-SMA" secondAttribute="width" id="KDE-hr-faE"/>
+                                                    <constraint firstItem="gaN-48-kp4" firstAttribute="width" secondItem="oXf-sI-SMA" secondAttribute="width" id="Wac-mt-8FD"/>
+                                                    <constraint firstItem="Hbu-dT-obh" firstAttribute="width" secondItem="oXf-sI-SMA" secondAttribute="width" id="b8h-hd-Erx"/>
+                                                </constraints>
                                             </stackView>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -349,7 +400,6 @@
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="cdl-rZ-vI9" firstAttribute="top" secondItem="AUz-sl-kfG" secondAttribute="top" id="5Ug-s9-OZU"/>
-                                    <constraint firstAttribute="height" constant="260" id="7V4-Qa-MFD"/>
                                     <constraint firstItem="kfp-Sr-4yg" firstAttribute="top" secondItem="AUz-sl-kfG" secondAttribute="top" id="YVj-sA-hHe"/>
                                 </constraints>
                             </stackView>
@@ -397,7 +447,7 @@
                                 </prototypes>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Weather" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5u1-tA-8oG">
-                                <rect key="frame" x="474" y="37.5" width="110" height="25"/>
+                                <rect key="frame" x="471.5" y="37.5" width="110" height="25"/>
                                 <color key="backgroundColor" red="0.90823972230000005" green="0.92638683320000004" blue="0.93171715740000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="110" id="rpK-Bd-KPB"/>
@@ -407,7 +457,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Airport / Runway" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WFX-8D-scI">
-                                <rect key="frame" x="731" y="37.5" width="220" height="25"/>
+                                <rect key="frame" x="728.5" y="37.5" width="220" height="25"/>
                                 <color key="backgroundColor" red="0.90823972230000005" green="0.92638683320000004" blue="0.93171715740000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="220" id="0x9-KS-3Da"/>
@@ -416,8 +466,8 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="s6g-1a-mi7">
-                                <rect key="frame" x="827.5" y="117.5" width="156.5" height="120"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="s6g-1a-mi7">
+                                <rect key="frame" x="804" y="476" width="156.5" height="120"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="120" id="1te-6E-Krp"/>
@@ -462,6 +512,7 @@
                             <constraint firstItem="47H-dO-5rM" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="30" id="gyJ-IT-KIA"/>
                             <constraint firstItem="WFX-8D-scI" firstAttribute="centerX" secondItem="FvK-Jm-bzA" secondAttribute="centerX" id="ihl-SY-aME"/>
                             <constraint firstItem="5u1-tA-8oG" firstAttribute="centerX" secondItem="WuD-Ro-x5I" secondAttribute="centerX" id="jJq-oD-zgU"/>
+                            <constraint firstItem="47H-dO-5rM" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.4" id="nFc-3f-8zX"/>
                             <constraint firstItem="WFX-8D-scI" firstAttribute="top" secondItem="FvK-Jm-bzA" secondAttribute="top" constant="-12.5" id="tnE-4t-uXX"/>
                             <constraint firstItem="j4R-uM-y2F" firstAttribute="centerX" secondItem="pso-P8-b2W" secondAttribute="centerX" id="wQA-0N-W2T"/>
                             <constraint firstItem="47H-dO-5rM" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="30" id="wfq-7c-Z2I"/>
@@ -479,7 +530,13 @@
                         <outlet property="brakingActionPicker" destination="ysl-ie-rnO" id="bt6-7F-UJr"/>
                         <outlet property="flapSelectionSegmentedControl" destination="7Uj-Kn-d6U" id="1yT-RV-egi"/>
                         <outlet property="reverseThrustSegmentedControl" destination="noH-wl-i5Q" id="GXf-Mi-SPg"/>
+                        <outlet property="runwayDistanceLabel" destination="ciR-5g-Cob" id="kvx-Ca-b9C"/>
+                        <outlet property="runwayDistanceStack" destination="Irw-C6-fXB" id="d5O-Ie-hgu"/>
+                        <outlet property="runwayElevationLabel" destination="jfk-AI-sd2" id="if6-o4-jDX"/>
+                        <outlet property="runwayElevationStack" destination="D5D-nH-7Wk" id="dsn-ve-bBo"/>
                         <outlet property="runwayPicker" destination="uGG-Jw-4cY" id="bkB-af-LeU"/>
+                        <outlet property="runwaySlopeLabel" destination="yhP-lQ-8bv" id="DL2-5G-rvv"/>
+                        <outlet property="runwaySlopeStack" destination="lyL-Jv-C9y" id="j5P-HZ-BOr"/>
                         <outlet property="tempPicker" destination="ekT-xa-DLW" id="wQu-xw-1Ns"/>
                         <outlet property="variantSelectionTableView" destination="RUc-Dn-One" id="mrF-rg-3Az"/>
                         <outlet property="variantSelectionTextField" destination="gO5-w5-5nR" id="vlT-1h-y2d"/>

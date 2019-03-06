@@ -38,10 +38,6 @@ struct Runway : Codable {
         return elevationFeet
     }
     
-    func getOrientation() -> Int {
-        return orientation
-    }
-    
 }
 
 

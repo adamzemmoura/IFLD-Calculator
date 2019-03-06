@@ -13,19 +13,56 @@ class ViewController: UIViewController {
     // MARK:- Properties
     private var airports = [Airport]() {
         didSet {
-            // update the airports picker
-            airportPicker.reloadAllComponents()
-            airportSelectionTableView.reloadData()
+            updateUI()
+        }
+    }
+    private var filteredAirports = [Airport]() {
+        didSet {
+            updateUI()
         }
     }
     private var selectedAirport: Airport? = nil {
         didSet {
-            // every time the selected airport changes, update the runways to correspond
-            runwayPicker.reloadAllComponents()
-            runwayPicker.selectRow(0, inComponent: 0, animated: true)
-            airportTextField.text = selectedAirport?.getName()
+            selectedRunway = nil // airport has changed so make sure the selected runway is nil initially : updated in updateUI() 
+            updateUI()
         }
     }
+    
+    private var selectedRunway: Runway? = nil {
+        didSet {
+            updateUI()
+        }
+    }
+    
+    private var userIsSearchingForAirport : Bool {
+        get {
+            return airportSearchText.count > 0
+        }
+    }
+    private var airportSearchText = "" {
+        didSet {
+            if airportSearchText.count == 0 {
+                filteredAirports = []
+            } else {
+                filteredAirports = airports.filter({ (airport) -> Bool in
+                    
+                    // check if the airport name contains the search text
+                    if airport.getName().lowercased().contains(airportSearchText.lowercased()) {
+                        return true
+                    }
+                    // check if the code contains the search text
+                    if airport.getCode().lowercased().contains(airportSearchText.lowercased()) {
+                        return true
+                    }
+                    // if neither, return false 
+                    return false 
+                })
+            }
+            
+        }
+    }
+    
+    
     
     private struct TableviewCellIdentifiers {
         static let variantCell = "variantTableViewCell"
@@ -115,7 +152,12 @@ class ViewController: UIViewController {
         }
     }
     
-    
+    @IBOutlet weak var runwayDistanceStack: UIStackView!
+    @IBOutlet weak var runwaySlopeStack: UIStackView!
+    @IBOutlet weak var runwayElevationStack: UIStackView!
+    @IBOutlet weak var runwayDistanceLabel: UILabel!
+    @IBOutlet weak var runwaySlopeLabel: UILabel!
+    @IBOutlet weak var runwayElevationLabel: UILabel!
     
     
     // MARK:- Lifecycle Methods
@@ -124,6 +166,8 @@ class ViewController: UIViewController {
         
         // set delegate on AirportDataStore to subscribe to updates on airports data model
         AirportDataStore.shared.delegate = self
+        
+        updateUI()
         
     }
 
@@ -137,6 +181,40 @@ class ViewController: UIViewController {
         view.layer.borderColor = UIColor.lightGray.cgColor
         view.layer.cornerRadius = 5
         view.clipsToBounds = true
+    }
+    
+    private func updateUI() {
+        
+        airportPicker.reloadAllComponents()
+        airportSelectionTableView.reloadData()
+        
+        if selectedRunway == nil && selectedAirport != nil {
+            runwayPicker.selectRow(0, inComponent: 0, animated: true)
+            selectedRunway = selectedAirport?.getRunways().first!
+        }
+        
+        // every time the selected airport changes, update the runways to correspond
+        runwayPicker.reloadAllComponents()
+        
+        airportTextField.text = selectedAirport?.getName()
+        
+        updateRunwayInfoUI()
+    }
+    
+    private func updateRunwayInfoUI() {
+        
+        runwayDistanceStack.isHidden = selectedRunway == nil
+        runwaySlopeStack.isHidden = selectedRunway == nil
+        runwayElevationStack.isHidden = selectedRunway == nil
+        
+        let runwayDistanceText = selectedRunway == nil ? "" : "\(selectedRunway!.getDistanceMeters())m"
+        let runwaySlopeText = selectedRunway == nil ? "" : "\(selectedRunway!.getSlope())%"
+        let runwayElevationText = selectedRunway == nil ? "" : "\(selectedRunway!.getElevationFeet())ft"
+        
+        runwayDistanceLabel.text = runwayDistanceText
+        runwaySlopeLabel.text = runwaySlopeText
+        runwayElevationLabel.text = runwayElevationText
+        
     }
 
 }
@@ -159,6 +237,16 @@ extension ViewController : UITextFieldDelegate {
         return true
     }
     
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+       
+        if textField == airportTextField {
+            airportSearchText = NSString(string: textField.text!).replacingCharacters(in: range, with: string)
+            return true
+        }
+        
+        return false
+        
+    }
 }
 
 // MARK:- UITableViewDelegate
@@ -200,7 +288,7 @@ extension ViewController : UITableViewDataSource {
         }
         
         if tableView == airportSelectionTableView {
-            return airports.count
+            return userIsSearchingForAirport ? filteredAirports.count : airports.count
         }
         
         return 0
@@ -214,7 +302,7 @@ extension ViewController : UITableViewDataSource {
         
         if tableView == airportSelectionTableView {
             cell = tableView.dequeueReusableCell(withIdentifier: TableviewCellIdentifiers.airportCell, for: indexPath)
-            let airport = airports[indexPath.row]
+            let airport = userIsSearchingForAirport ? filteredAirports[indexPath.row] : airports[indexPath.row]
             titleText = airport.getName()
             detailText = airport.getCode()
         }
@@ -351,6 +439,10 @@ extension ViewController : UIPickerViewDelegate {
         if pickerView == airportPicker {
             selectedAirport = airports[row]
         }
+        
+        if pickerView == runwayPicker {
+            selectedRunway = selectedAirport?.getRunways()[row]
+        }
     }
     
 }
@@ -359,7 +451,22 @@ extension ViewController : UIPickerViewDelegate {
 extension ViewController: AirportDataStoreDelegate {
     
     func airportDataStoreDidUpdate(airports: [Airport]) {
-        print("DELEGATE RECEIVED AIRPORTS FROM DATA SOURCE")
+        
+        if let selectedAirport = selectedAirport, let selectedRunway = selectedRunway {
+            
+            // check if the airport is still contained within the dataset
+            if airports.contains(where: {$0.getCode() == selectedAirport.getCode()}) {
+    
+                // update the airport with selected airport
+                self.selectedAirport = airports.first(where: { $0.getCode() == selectedAirport.getCode() })
+                
+                // check whether there is still runway data in the dataset for selected runway
+                if self.selectedAirport!.getRunways().contains(where: { $0.getName() == selectedRunway.getName() }) {
+                    self.selectedRunway = self.selectedAirport?.getRunways().first(where: {$0.getName() == selectedRunway.getName() }) // replace the runway with the new one to make sure in sync
+                }
+            }
+        }
+        
         self.airports = airports
     }
     

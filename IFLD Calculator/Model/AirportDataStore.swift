@@ -59,6 +59,7 @@ class AirportDataStore {
             }
             
             // try to decode the data in the snapshot into an array of Airport objects
+            self._airports = [] // ensure array starts off empty to avoid duplicates
             for airportData in airportsDict.values {
                 do {
                     let airport = try FirebaseDecoder().decode(Airport.self, from: airportData)
