@@ -11,9 +11,9 @@ import Foundation
 enum RunwayCondition : String {
     case dry = "Dry"
     case good = "Good"
-    case goodToMedium = "Good - Medium"
+    case goodToMedium = "Good - Med"
     case medium = "Medium"
-    case mediumToPoor = "Medium - Poor"
+    case mediumToPoor = "Med - Poor"
     case poor = "Poor"
     
     static let options : [RunwayCondition] = [.dry, .good, .goodToMedium, .medium, .mediumToPoor, .poor]

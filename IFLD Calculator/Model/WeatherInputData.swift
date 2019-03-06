@@ -36,4 +36,12 @@ struct WeatherInputData {
         return temps
     }()
     
+    static let pressureDataMillibars : [Int] = {
+        var pressureSettings : [Int] = []
+        for i in 940...1050 {
+            pressureSettings.append(i)
+        }
+        return pressureSettings
+    }()
+    
 }

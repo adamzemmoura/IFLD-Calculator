@@ -11,6 +11,17 @@ import UIKit
 class ViewController: UIViewController {
     
     // MARK:- Properties
+    private var landingDistanceInputData = LandingDistanceInputData(flapSetting: .twentyFive,
+                                                                    reverse: .two,
+                                                                    wind: (180, 0),
+                                                                    tempCelcius: 15,
+                                                                    runwayBrakingAction: .dry,
+                                                                    pressureMillibars: 1013) {
+        didSet {
+            updateUI()
+        }
+    }
+    
     private var airports = [Airport]() {
         didSet {
             updateUI()
@@ -106,30 +117,17 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBOutlet weak var windPicker: UIPickerView! {
-        didSet {
-            // set the middle of the picker data set as default
-            let initialRow = windPicker.dataSource!.pickerView(windPicker, numberOfRowsInComponent: 0) / 2
-            windPicker.selectRow(initialRow-1, inComponent: 0, animated: false)
-            
-        }
-    }
-    @IBOutlet weak var tempPicker: UIPickerView! {
-        didSet {
-            // set inital temperature to ISA at sea level ie. 15ºC
-            if let initialRow = WeatherInputData.temperatureData.firstIndex(of: 15) {
-                tempPicker.selectRow(initialRow, inComponent: 0, animated: false)
-            }
-        }
-    }
+    @IBOutlet weak var windPicker: UIPickerView!
+    @IBOutlet weak var tempPicker: UIPickerView! 
     @IBOutlet weak var brakingActionPicker: UIPickerView!
     
-    @IBOutlet weak var airportPicker: UIPickerView! {
+    @IBOutlet weak var pressureSettingPicker: UIPickerView! {
         didSet {
-            airportPicker.delegate = self
-            airportPicker.dataSource = self
+            pressureSettingPicker.dataSource = self
+            pressureSettingPicker.delegate = self
         }
     }
+    
     
     @IBOutlet weak var runwayPicker: UIPickerView! {
         didSet {
@@ -137,6 +135,7 @@ class ViewController: UIViewController {
             runwayPicker.dataSource = self
         }
     }
+    
     
     @IBOutlet weak var airportTextField: UITextField! {
         didSet {
@@ -159,6 +158,35 @@ class ViewController: UIViewController {
     @IBOutlet weak var runwaySlopeLabel: UILabel!
     @IBOutlet weak var runwayElevationLabel: UILabel!
     
+    @IBOutlet weak var calculateLandingDistancesButton: UIButton! {
+        didSet {
+            calculateLandingDistancesButton.layer.cornerRadius = 5
+            calculateLandingDistancesButton.clipsToBounds = true
+            calculateLandingDistancesButton.isEnabled = false
+        }
+    }
+    
+    // MARK:- IBActions
+    
+    @IBAction func userDidSelectFlapSetting(_ sender: UISegmentedControl) {
+        view.endEditing(true)
+        let index = sender.selectedSegmentIndex
+        let title = sender.titleForSegment(at: index)!
+        if let selectedFlapSetting = FlapSetting(rawValue: title) {
+            landingDistanceInputData.flapSetting = selectedFlapSetting
+        }
+    }
+    
+    @IBAction func userDidSelectReverseThrust(_ sender: UISegmentedControl) {
+        view.endEditing(true)
+        let index = sender.selectedSegmentIndex
+        let title = sender.titleForSegment(at: index)!
+        if let reverseThrustSelection = ReverseThrustAvailable(rawValue: title) {
+            landingDistanceInputData.reverseThrustAvailable = reverseThrustSelection
+        }
+    }
+    
+    
     
     // MARK:- Lifecycle Methods
     override func viewDidLoad() {
@@ -167,13 +195,17 @@ class ViewController: UIViewController {
         // set delegate on AirportDataStore to subscribe to updates on airports data model
         AirportDataStore.shared.delegate = self
         
-        updateUI()
         
+        
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
     }
 
     // MARK:- Helper Methods
-    private func toggleViewIsHidden(view: UIView) {
-        view.isHidden = !view.isHidden
+    private func shouldHideView(view: UIView, bool: Bool) {
+        view.isHidden = bool
     }
     
     private func applyBorderStyles(view: UIView) {
@@ -185,7 +217,8 @@ class ViewController: UIViewController {
     
     private func updateUI() {
         
-        airportPicker.reloadAllComponents()
+        syncInputControlsWithLandingDistanceInputModel()
+        
         airportSelectionTableView.reloadData()
         
         if selectedRunway == nil && selectedAirport != nil {
@@ -196,9 +229,102 @@ class ViewController: UIViewController {
         // every time the selected airport changes, update the runways to correspond
         runwayPicker.reloadAllComponents()
         
-        airportTextField.text = selectedAirport?.getName()
+        if airportSearchText == "" {
+            airportTextField.text = selectedAirport?.getName()
+        } else {
+            airportTextField.text = airportSearchText
+        }
         
         updateRunwayInfoUI()
+        
+        calculateLandingDistancesButton.isEnabled = landingDistanceInputData.containsAllRequiredInputs()
+        calculateLandingDistancesButton.alpha = calculateLandingDistancesButton.isEnabled ? 1 : 0.5
+    }
+    
+    private func syncInputControlsWithLandingDistanceInputModel() {
+        
+        // set flap segmented control
+        if let flapSelection = landingDistanceInputData.flapSetting {
+            
+            for i in 0..<flapSelectionSegmentedControl.numberOfSegments {
+                let title = flapSelectionSegmentedControl.titleForSegment(at: i)!
+                if title == flapSelection.rawValue {
+                    flapSelectionSegmentedControl.selectedSegmentIndex = i
+                    break
+                }
+            }
+        }
+        
+        // set the reverser segmented control
+        if let reverseSelection = landingDistanceInputData.reverseThrustAvailable {
+            for i in 0..<reverseThrustSegmentedControl.numberOfSegments {
+                let title = reverseThrustSegmentedControl.titleForSegment(at: i)
+                if title == reverseSelection.rawValue {
+                    reverseThrustSegmentedControl.selectedSegmentIndex = i
+                    break
+                }
+            }
+        }
+        
+        
+        // set text in weight textField
+        var weightText = ""
+        if let aircraftWeight = landingDistanceInputData.aircraftWeightTonnes {
+            weightText = "\(aircraftWeight)T"
+        }
+        weightTextField.text = weightText
+        
+        // set the variant
+        variantSelectionTextField.text = landingDistanceInputData.aircraftVariant?.rawValue ?? ""
+        
+        // set the wind picker
+        if let (windDirection, windSpeed) = landingDistanceInputData.wind {
+            // search the picker's data model to check for the index of direction and set it
+            for (i, direction) in WeatherInputData.windDirectionData.enumerated() {
+                if windDirection == direction {
+                    windPicker.selectRow(i, inComponent: 0, animated: false)
+                    break
+                }
+            }
+            // search the picker's data mode to check for the index of speed and set it
+            for (i, speed) in WeatherInputData.windSpeedData.enumerated() {
+                if windSpeed == speed {
+                    windPicker.selectRow(i, inComponent: 1, animated: false)
+                    break
+                }
+            }
+        }
+        
+        // set the temperature
+        if let temperature = landingDistanceInputData.temperatueCelcius {
+            for (i, temp) in WeatherInputData.temperatureData.enumerated() {
+                if temp == temperature {
+                    tempPicker.selectRow(i, inComponent: 0, animated: false)
+                    break
+                }
+            }
+        }
+        
+        // set the braking action
+        if let brakingAction = landingDistanceInputData.runwayBrakingAction {
+            for (i, brakingActionOption) in RunwayCondition.options.enumerated() {
+                if brakingAction == brakingActionOption {
+                    brakingActionPicker.selectRow(i, inComponent: 0, animated: false)
+                    break
+                }
+            }
+        }
+        
+        // set the pressure picker
+        if let pressureSetting = landingDistanceInputData.pressureMillibars {
+            for (i, pressure) in WeatherInputData.pressureDataMillibars.enumerated() {
+                if pressureSetting == pressure {
+                    pressureSettingPicker.selectRow(i, inComponent: 0, animated: false)
+                    break
+                }
+            }
+        }
+        
     }
     
     private func updateRunwayInfoUI() {
@@ -224,12 +350,12 @@ extension ViewController : UITextFieldDelegate {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         
         if textField == variantSelectionTextField {
-            toggleViewIsHidden(view: variantSelectionTableView)
+            shouldHideView(view: variantSelectionTableView, bool: false)
             return false
         }
         
         if textField == airportTextField {
-            toggleViewIsHidden(view: airportSelectionTableView)
+            shouldHideView(view: airportSelectionTableView, bool: false)
             selectedAirport = nil
             return true
         }
@@ -241,12 +367,54 @@ extension ViewController : UITextFieldDelegate {
        
         if textField == airportTextField {
             airportSearchText = NSString(string: textField.text!).replacingCharacters(in: range, with: string)
-            return true
+            return false
         }
         
-        return false
+        if textField == weightTextField {
+            
+            if string == "" { return true }
+            
+            if string == "." && textField.text!.count > 0 {
+                if let existingText = textField.text, existingText.contains(".") {
+                    return false
+                }
+                else {
+                    return true
+                }
+
+            }
+            
+            // make sure the replacement string can be convered to a double
+            if let _ = Double(string) {
+                return true
+            } else {
+                return false
+            }
+        }
+        
+        return true
         
     }
+    
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        
+        if textField == weightTextField {
+            if let text = textField.text, text.count > 0, let weight = Double(text) {
+                landingDistanceInputData.aircraftWeightTonnes = weight
+            } else {
+                landingDistanceInputData.aircraftWeightTonnes = nil 
+            }
+        }
+        
+        if textField == airportTextField {
+            shouldHideView(view: airportSelectionTableView, bool: true)
+        }
+        
+        return true
+    }
+
+    
+    
 }
 
 // MARK:- UITableViewDelegate
@@ -259,14 +427,15 @@ extension ViewController : UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         if tableView == variantSelectionTableView {
-            let selectedVariant = AircraftType.options[indexPath.row].rawValue
+            let selectedVariant = AircraftType.options[indexPath.row]
             tableView.deselectRow(at: indexPath, animated: true)
-            toggleViewIsHidden(view: variantSelectionTableView)
-            variantSelectionTextField.text = selectedVariant
+            shouldHideView(view: variantSelectionTableView, bool: true)
+            landingDistanceInputData.aircraftVariant = selectedVariant
         }
         else if tableView == airportSelectionTableView {
             selectedAirport = airports[indexPath.row]
-            toggleViewIsHidden(view: airportSelectionTableView)
+            airportSearchText = ""
+            shouldHideView(view: airportSelectionTableView, bool: true)
             airportTextField.resignFirstResponder()
         }
         
@@ -355,14 +524,6 @@ extension ViewController : UIPickerViewDataSource {
             return RunwayCondition.options.count
         }
         
-        // airport
-        if pickerView == airportPicker {
-            if airports.count > 0 {
-                return airports.count
-            }
-            return 1 // to allow for default text in picker view
-        }
-        
         // runways
         if pickerView == runwayPicker {
             if let selectedAirport = selectedAirport {
@@ -372,11 +533,13 @@ extension ViewController : UIPickerViewDataSource {
             }
         }
         
+        // pressure setting
+        if pickerView == pressureSettingPicker {
+            return WeatherInputData.pressureDataMillibars.count
+        }
+        
         return 0
     }
-    
-    
-    
     
 }
 
@@ -409,14 +572,6 @@ extension ViewController : UIPickerViewDelegate {
             return RunwayCondition.options[row].rawValue
         }
         
-        // airport
-        if pickerView == airportPicker {
-            if airports.count > 0 {
-                return airports[row].getName()
-            }
-            return "Select"
-        }
-        
         // runways at airport
         if pickerView == runwayPicker {
             
@@ -430,19 +585,53 @@ extension ViewController : UIPickerViewDelegate {
             
         }
         
-        return "Test"
+        // pressure settings
+        if pickerView == pressureSettingPicker {
+            return "\(WeatherInputData.pressureDataMillibars[row])mb"
+        }
+        
+        return ""
         
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
-        if pickerView == airportPicker {
-            selectedAirport = airports[row]
-        }
-        
+        // handle runway picker selection
         if pickerView == runwayPicker {
             selectedRunway = selectedAirport?.getRunways()[row]
         }
+        
+        // handle wind picker selection
+        if pickerView == windPicker {
+            if component == 0 {
+                let direction = WeatherInputData.windDirectionData[row]
+                landingDistanceInputData.wind?.direction = direction
+            }
+            else if component == 1 {
+                let speed = WeatherInputData.windSpeedData[row]
+                landingDistanceInputData.wind?.speed = speed
+            }
+            
+        }
+        
+        // handle temperature picker selection
+        if pickerView == tempPicker {
+            let selectedTemp = WeatherInputData.temperatureData[row]
+            landingDistanceInputData.temperatueCelcius = selectedTemp
+        }
+        
+        // handle braking action picker selection
+        if pickerView == brakingActionPicker {
+            let selectedBrakingAction = RunwayCondition.options[row]
+            landingDistanceInputData.runwayBrakingAction = selectedBrakingAction
+        }
+        
+        // handle pressure setting picker selection
+        if pickerView == pressureSettingPicker {
+            let selectedPressureSetting = WeatherInputData.pressureDataMillibars[row]
+            landingDistanceInputData.pressureMillibars = selectedPressureSetting
+        }
+    
     }
     
 }

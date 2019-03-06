@@ -9,7 +9,7 @@
 import Foundation
 
 enum ReverseThrustAvailable : String {
-    case two = "Both"
-    case one = "One"
+    case two = "2"
+    case one = "1"
     case none = "None"
 }
