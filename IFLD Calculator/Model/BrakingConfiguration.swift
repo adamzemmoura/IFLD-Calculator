@@ -15,4 +15,6 @@ enum BrakingConfiguration : String {
     case autobrakeThree = "Autobrake 3"
     case autobrakeTwo = "Autobrake 2"
     case autobrakeOne = "Autobrake 1"
+    
+    static let options : [BrakingConfiguration] = [.maxManual, .autobrakeMax, .autobrakeFour, .autobrakeThree, .autobrakeTwo, .autobrakeOne]
 }

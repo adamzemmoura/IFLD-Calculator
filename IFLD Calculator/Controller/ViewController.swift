@@ -18,7 +18,22 @@ class ViewController: UIViewController {
                                                                     runwayBrakingAction: .dry,
                                                                     pressureMillibars: 1013) {
         didSet {
+            if landingDistanceInputData.containsAllRequiredInputs() {
+                landingDistances = LandingDistanceCalculator.calculateLandingDistances(inputData: landingDistanceInputData)
+            }
             updateUI()
+        }
+    }
+    
+    private var landingDistances: [BrakingConfiguration : Int]? = nil {
+        didSet {
+            updateUI()
+        }
+    }
+    
+    private var selectedRunway: Runway? {
+        get {
+            return landingDistanceInputData.runway
         }
     }
     
@@ -34,13 +49,7 @@ class ViewController: UIViewController {
     }
     private var selectedAirport: Airport? = nil {
         didSet {
-            selectedRunway = nil // airport has changed so make sure the selected runway is nil initially : updated in updateUI() 
-            updateUI()
-        }
-    }
-    
-    private var selectedRunway: Runway? = nil {
-        didSet {
+            landingDistanceInputData.runway = nil // airport has changed so make sure the selected runway is nil initially : updated in updateUI()
             updateUI()
         }
     }
@@ -118,7 +127,7 @@ class ViewController: UIViewController {
     }
     
     @IBOutlet weak var windPicker: UIPickerView!
-    @IBOutlet weak var tempPicker: UIPickerView! 
+    @IBOutlet weak var tempPicker: UIPickerView!
     @IBOutlet weak var brakingActionPicker: UIPickerView!
     
     @IBOutlet weak var pressureSettingPicker: UIPickerView! {
@@ -157,14 +166,38 @@ class ViewController: UIViewController {
     @IBOutlet weak var runwayDistanceLabel: UILabel!
     @IBOutlet weak var runwaySlopeLabel: UILabel!
     @IBOutlet weak var runwayElevationLabel: UILabel!
+    @IBOutlet weak var runwayHeadingLabel: UILabel!
     
     @IBOutlet weak var calculateLandingDistancesButton: UIButton! {
         didSet {
             calculateLandingDistancesButton.layer.cornerRadius = 5
             calculateLandingDistancesButton.clipsToBounds = true
             calculateLandingDistancesButton.isEnabled = false
+            calculateLandingDistancesButton.isHidden = true
         }
     }
+    
+    @IBOutlet weak var calculatedLandingDistanceBorderView: UIView! {
+        didSet {
+            applyBorderStyles(view: calculatedLandingDistanceBorderView)
+        }
+    }
+    
+    @IBOutlet weak var maxManualDistanceLabel: UILabel!
+    @IBOutlet weak var maxAutobrakDistanceLabel: UILabel!
+    @IBOutlet weak var autobrakeFourDistanceLabel: UILabel!
+    @IBOutlet weak var autobrakeThreeDistanceLabel: UILabel!
+    @IBOutlet weak var autobrakeTwoDistanceLabel: UILabel!
+    @IBOutlet weak var autobrakeOneDistanceLabel: UILabel!
+    
+    private lazy var landingDistanceLabels : [UILabel] = [
+        maxManualDistanceLabel,
+        maxAutobrakDistanceLabel,
+        autobrakeFourDistanceLabel,
+        autobrakeThreeDistanceLabel,
+        autobrakeTwoDistanceLabel,
+        autobrakeOneDistanceLabel
+    ]
     
     // MARK:- IBActions
     
@@ -186,6 +219,13 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func userDidPressCalculateLandingDistances(_ sender: UIButton) {
+        
+        shouldHideView(view: sender, bool: true)
+        shouldHideView(view: calculatedLandingDistanceBorderView, bool: false)
+        LandingDistanceCalculator.calculateLandingDistances(inputData: landingDistanceInputData)
+        
+    }
     
     
     // MARK:- Lifecycle Methods
@@ -217,13 +257,15 @@ class ViewController: UIViewController {
     
     private func updateUI() {
         
+        updateLandingDistanceLabels()
+        
         syncInputControlsWithLandingDistanceInputModel()
         
         airportSelectionTableView.reloadData()
         
         if selectedRunway == nil && selectedAirport != nil {
             runwayPicker.selectRow(0, inComponent: 0, animated: true)
-            selectedRunway = selectedAirport?.getRunways().first!
+            landingDistanceInputData.runway = selectedAirport?.getRunways().first!
         }
         
         // every time the selected airport changes, update the runways to correspond
@@ -237,8 +279,24 @@ class ViewController: UIViewController {
         
         updateRunwayInfoUI()
         
-        calculateLandingDistancesButton.isEnabled = landingDistanceInputData.containsAllRequiredInputs()
-        calculateLandingDistancesButton.alpha = calculateLandingDistancesButton.isEnabled ? 1 : 0.5
+//        calculateLandingDistancesButton.isEnabled = landingDistanceInputData.containsAllRequiredInputs()
+//        calculateLandingDistancesButton.alpha = calculateLandingDistancesButton.isEnabled ? 1 : 0.5
+    }
+    
+    private func updateLandingDistanceLabels() {
+        if !landingDistanceInputData.containsAllRequiredInputs() {
+            for label in landingDistanceLabels {
+                label.text = "---------"
+            }
+        }
+        else if landingDistances != nil {
+            maxManualDistanceLabel.text = "\(landingDistances![.maxManual]!)m"
+            maxAutobrakDistanceLabel.text = "\(landingDistances![.autobrakeMax]!)m"
+            autobrakeFourDistanceLabel.text = "\(landingDistances![.autobrakeFour]!)m"
+            autobrakeThreeDistanceLabel.text = "\(landingDistances![.autobrakeThree]!)m"
+            autobrakeTwoDistanceLabel.text = "\(landingDistances![.autobrakeTwo]!)m"
+            autobrakeOneDistanceLabel.text = "\(landingDistances![.autobrakeOne]!)m"
+        }
     }
     
     private func syncInputControlsWithLandingDistanceInputModel() {
@@ -336,11 +394,20 @@ class ViewController: UIViewController {
         let runwayDistanceText = selectedRunway == nil ? "" : "\(selectedRunway!.getDistanceMeters())m"
         let runwaySlopeText = selectedRunway == nil ? "" : "\(selectedRunway!.getSlope())%"
         let runwayElevationText = selectedRunway == nil ? "" : "\(selectedRunway!.getElevationFeet())ft"
+        var runwayHeadingText: String = ""
+        if let selectedRunway = selectedRunway {
+            let runwayHeading = selectedRunway.getOrientation()
+            if runwayHeading < 100 {
+                runwayHeadingText = "0\(runwayHeading)"
+            } else {
+                runwayHeadingText = "\(runwayHeading)"
+            }
+        }
         
         runwayDistanceLabel.text = runwayDistanceText
         runwaySlopeLabel.text = runwaySlopeText
         runwayElevationLabel.text = runwayElevationText
-        
+        runwayHeadingLabel.text = runwayHeadingText
     }
 
 }
@@ -348,6 +415,10 @@ class ViewController: UIViewController {
 extension ViewController : UITextFieldDelegate {
     
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        
+        if textField == weightTextField {
+            landingDistanceInputData.aircraftWeightTonnes = nil
+        }
         
         if textField == variantSelectionTextField {
             shouldHideView(view: variantSelectionTableView, bool: false)
@@ -396,13 +467,18 @@ extension ViewController : UITextFieldDelegate {
         
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         
         if textField == weightTextField {
             if let text = textField.text, text.count > 0, let weight = Double(text) {
                 landingDistanceInputData.aircraftWeightTonnes = weight
             } else {
-                landingDistanceInputData.aircraftWeightTonnes = nil 
+                landingDistanceInputData.aircraftWeightTonnes = nil
             }
         }
         
@@ -598,7 +674,7 @@ extension ViewController : UIPickerViewDelegate {
         
         // handle runway picker selection
         if pickerView == runwayPicker {
-            selectedRunway = selectedAirport?.getRunways()[row]
+            landingDistanceInputData.runway = selectedAirport?.getRunways()[row]
         }
         
         // handle wind picker selection
@@ -651,7 +727,8 @@ extension ViewController: AirportDataStoreDelegate {
                 
                 // check whether there is still runway data in the dataset for selected runway
                 if self.selectedAirport!.getRunways().contains(where: { $0.getName() == selectedRunway.getName() }) {
-                    self.selectedRunway = self.selectedAirport?.getRunways().first(where: {$0.getName() == selectedRunway.getName() }) // replace the runway with the new one to make sure in sync
+                    // replace the runway with the new one to make sure in sync
+                    self.landingDistanceInputData.runway = self.selectedAirport?.getRunways().first(where: {$0.getName() == selectedRunway.getName() })
                 }
             }
         }

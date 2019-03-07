@@ -14,12 +14,14 @@ struct Runway : Codable {
     private let distanceMeters : Int
     private let slope : Double
     private let elevationFeet : Int
+    private let orientation : Int
     
-    init(name: String, distanceMeters: Int, slope: Double, elevationFeet: Int) {
+    init(name: String, distanceMeters: Int, slope: Double, elevationFeet: Int, orientation: Int) {
         self.name = name
         self.distanceMeters = distanceMeters
         self.slope = slope
         self.elevationFeet = elevationFeet
+        self.orientation = orientation
     }
     
     func getName() -> String {
@@ -36,6 +38,10 @@ struct Runway : Codable {
     
     func getElevationFeet() -> Int {
         return elevationFeet
+    }
+    
+    func getOrientation() -> Int {
+        return orientation 
     }
     
 }

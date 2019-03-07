@@ -22,6 +22,9 @@ struct LandingDistanceInputData {
     var runwayBrakingAction : RunwayCondition?
     var pressureMillibars : Int?
     
+    // Runway
+    var runway: Runway?
+    
     init(flapSetting: FlapSetting, reverse: ReverseThrustAvailable, wind: (Int, Int), tempCelcius: Int, runwayBrakingAction: RunwayCondition, pressureMillibars: Int) {
         self.flapSetting = flapSetting
         self.reverseThrustAvailable = reverse
@@ -40,6 +43,7 @@ struct LandingDistanceInputData {
             && temperatueCelcius != nil
             && runwayBrakingAction != nil
             && pressureMillibars != nil
+            && runway != nil
     }
     
 }

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		543B0078223034E6007B3E31 /* LandingDistanceInputData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543B0077223034E5007B3E31 /* LandingDistanceInputData.swift */; };
+		543B007A2230884C007B3E31 /* LandingDistanceCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543B00792230884C007B3E31 /* LandingDistanceCalculator.swift */; };
+		543B007C22314229007B3E31 /* WindComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543B007B22314229007B3E31 /* WindComponent.swift */; };
 		54472FFA22285CD400919DD1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54472FF922285CD400919DD1 /* AppDelegate.swift */; };
 		54472FFC22285CD400919DD1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54472FFB22285CD400919DD1 /* ViewController.swift */; };
 		54472FFF22285CD400919DD1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 54472FFD22285CD400919DD1 /* Main.storyboard */; };
@@ -45,6 +47,8 @@
 		2D55C2E8A49DC39393F97854 /* Pods-IFLD CalculatorTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IFLD CalculatorTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IFLD CalculatorTests/Pods-IFLD CalculatorTests.debug.xcconfig"; sourceTree = "<group>"; };
 		3E095AF1A5DD36FEF3D82283 /* Pods-IFLD Calculator.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IFLD Calculator.release.xcconfig"; path = "Pods/Target Support Files/Pods-IFLD Calculator/Pods-IFLD Calculator.release.xcconfig"; sourceTree = "<group>"; };
 		543B0077223034E5007B3E31 /* LandingDistanceInputData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingDistanceInputData.swift; sourceTree = "<group>"; };
+		543B00792230884C007B3E31 /* LandingDistanceCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingDistanceCalculator.swift; sourceTree = "<group>"; };
+		543B007B22314229007B3E31 /* WindComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindComponent.swift; sourceTree = "<group>"; };
 		54472FF622285CD400919DD1 /* IFLD Calculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IFLD Calculator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		54472FF922285CD400919DD1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		54472FFB22285CD400919DD1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -167,6 +171,8 @@
 				54D8DADE222D8A78003F34EA /* Airport.swift */,
 				54BB01F7222D99F00049D0C6 /* AirportDataStore.swift */,
 				543B0077223034E5007B3E31 /* LandingDistanceInputData.swift */,
+				543B00792230884C007B3E31 /* LandingDistanceCalculator.swift */,
+				543B007B22314229007B3E31 /* WindComponent.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -384,6 +390,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				543B007A2230884C007B3E31 /* LandingDistanceCalculator.swift in Sources */,
 				54472FFC22285CD400919DD1 /* ViewController.swift in Sources */,
 				54BB01F8222D99F00049D0C6 /* AirportDataStore.swift in Sources */,
 				54472FFA22285CD400919DD1 /* AppDelegate.swift in Sources */,
@@ -392,6 +399,7 @@
 				5447302F222AC3BC00919DD1 /* WeatherInputData.swift in Sources */,
 				54473026222862EA00919DD1 /* FlapSetting.swift in Sources */,
 				544730282228652B00919DD1 /* RunwayCondition.swift in Sources */,
+				543B007C22314229007B3E31 /* WindComponent.swift in Sources */,
 				54473031222AEB1100919DD1 /* AircraftType.swift in Sources */,
 				5447302022285E4100919DD1 /* LandingPerformanceData.swift in Sources */,
 				54D8DADF222D8A78003F34EA /* Airport.swift in Sources */,
