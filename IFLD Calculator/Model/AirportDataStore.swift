@@ -112,20 +112,22 @@ class AirportDataStore {
         
     }
     
-//    private func addTestData() {
-//        
-//        let heathrow = Airport(name: "Heathrow", icaoCode: "egll", runways: [
-//                Runway(name: "27L", distanceMeters: 3000, slope: 0.0, elevationFeet: 80),
-//                Runway(name: "27R", distanceMeters: 3100, slope: 0.0, elevationFeet: 80)
-//            ])
-//        let gatwick = Airport(name: "Gatwick", icaoCode: "egkk", runways: [
-//            Runway(name: "08R", distanceMeters: 2500, slope: 0.0, elevationFeet: 80),
-//            Runway(name: "26L", distanceMeters: 2500, slope: 0.0, elevationFeet: 80)
-//            ])
-//        
-//        let _ = addAirport(airport: heathrow)
-//        let _ = addAirport(airport: gatwick)
-//        
-//    }
+    private func addTestData() {
+        
+        let shanghai = Airport(name: "Shanghai", icaoCode: "ZSPD", runways: [
+                Runway(name: "35L", distanceMeters: 3400, slope: 0, elevationFeet: 12, orientation: 348),
+                Runway(name: "35R", distanceMeters: 3800, slope: 0, elevationFeet: 12, orientation: 347),
+                Runway(name: "34L", distanceMeters: 3800, slope: 0, elevationFeet: 11, orientation: 347),
+                Runway(name: "34R", distanceMeters: 3800, slope: 0, elevationFeet: 12, orientation: 347),
+                Runway(name: "16L", distanceMeters: 3800, slope: 0, elevationFeet: 12, orientation: 167),
+                Runway(name: "16R", distanceMeters: 3800, slope: 0, elevationFeet: 11, orientation: 167),
+                Runway(name: "17L", distanceMeters: 4000, slope: 0, elevationFeet: 10, orientation: 167),
+                Runway(name: "17R", distanceMeters: 3400, slope: 0, elevationFeet: 12, orientation: 167)
+            ])
+        
+        let _ = addAirport(airport: shanghai)
+        
+        
+    }
     
 }

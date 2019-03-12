@@ -8,7 +8,13 @@
 
 import Foundation
 
+protocol LandingDistanceCalculatorDelegate {
+    func didCalculateWindComponents(windComponents: [(component: WindComponent, knots: Double)])
+}
+
 class LandingDistanceCalculator {
+    
+    static var delegate: LandingDistanceCalculatorDelegate? = nil
     
     static func calculateLandingDistances(inputData: LandingDistanceInputData) -> [BrakingConfiguration : Int] {
         
@@ -27,9 +33,10 @@ class LandingDistanceCalculator {
         let allPerformanceData : LandingPerformanceContainer.LandingPerformanceData
         
         switch aircraftVariant {
-            case .B777_200: allPerformanceData = LandingPerformanceContainer.getPerformanceDataFor(variant: aircraftVariant, flapSetting: flapSetting)
-            case .B777_200ER: fatalError()
-            case .B777_300ER: fatalError()
+            case .B777_200_GE90_76B: allPerformanceData = LandingPerformanceContainer.getPerformanceDataFor(variant: aircraftVariant, flapSetting: flapSetting)
+            case .B777_200ER_TRENT_895: fatalError()
+            case .B777_200ER_GE90_85B: fatalError()
+            case .B777_300ER_GE90_115BL: fatalError()
         }
         
         // 2) get data for reported braking action on the runway
@@ -38,7 +45,7 @@ class LandingDistanceCalculator {
             let altitudeAdjustments = allPerformanceData.altitudeAdjustmentPer1000FT[runwayCondition],
             let windAdjustments = allPerformanceData.windAdjustmentPer10KTS[runwayCondition],
             let slopeAdjustments = allPerformanceData.slopeAdjustmentPer1Percent[runwayCondition],
-            let temperatureAdjustments = allPerformanceData.tempAdjustmentPer10DegreesC[runwayCondition],
+            let temperatureAdjustments = allPerformanceData.tempAdjustment10DegreesC[runwayCondition],
             let vrefAdjustments = allPerformanceData.vrefAdjustmentPer5KtsAboveVref30[runwayCondition],
             let reverseThrustAdjustments = allPerformanceData.reverseThrustAdjustment[runwayCondition]
             else { fatalError() }
@@ -55,22 +62,52 @@ class LandingDistanceCalculator {
         printDistancesToConsole(title: "Reference distances for F\(flapSetting) on a \(aircraftVariant.rawValue)", distances: correctedDistances)
         
         // 4) apply weight corrections
-        correctedDistances = applyWeightCorrections(corrections: weightAdjustments, weight: weight, distances: correctedDistances)
+        correctedDistances = applyWeightCorrections(corrections: weightAdjustments,
+                                                    weight: weight,
+                                                    distances: correctedDistances)
         
         // 5) apply altitude adjustments
-        correctedDistances = applyAltitudeCorrections(altitudeAdjustments: altitudeAdjustments, runway: runway, distances: correctedDistances)
+        correctedDistances = applyAltitudeCorrections(altitudeAdjustments: altitudeAdjustments,
+                                                      runway: runway,
+                                                      distances: correctedDistances)
         
         // 6) apply wind adjustments
+        correctedDistances = applyWindCorrections(windAdjustments: windAdjustments,
+                                                  runway: runway,
+                                                  wind: wind,
+                                                  distances: correctedDistances)
+        
+        // 7) apply slope correction
+        correctedDistances = applySlopeCorrections(slopeAdjustments: slopeAdjustments,
+                                                   runway: runway,
+                                                   distances: correctedDistances)
+        
+        // 8) apply temperature corrections
+        correctedDistances = applyTempCorrections(tempAdjustments: temperatureAdjustments,
+                                                  runway: runway,
+                                                  temperature: temperature,
+                                                  distances: correctedDistances)
+        
+        // 7) apply Vref correction
         for (brakingAction, distance) in correctedDistances {
-            let windCorrectionPer10KnotsHeadwind = Double(windAdjustments[brakingAction]!.head)
-            let windCorrectionPer10KnotsTailwind = Double(windAdjustments[brakingAction]!.tail)
-            let correctionPerKnotHeadwind = windCorrectionPer10KnotsHeadwind / 10.0
-            let correctionPerKnowTailwind = windCorrectionPer10KnotsTailwind / 10.0
-            
-//            let windCorrections = calculateWindComponents(heading: runway., windDirection: <#T##Int#>, windSpeed: <#T##Int#>)
+            let correctionPerFiveKnotsAboveVref30 = vrefAdjustments[brakingAction]!
+            // TODO: make this dynamic ie. not just the defult 5 knots
+            correctedDistances[brakingAction] = distance + correctionPerFiveKnotsAboveVref30
         }
         
-        printDistancesToConsole(title: "Distances corrected for altitude", distances: correctedDistances)
+        // 8) apply correction for reverse available
+        for (brakingAction, distance) in correctedDistances {
+
+            let correctionForOneReverser = reverseThrustAdjustments[brakingAction]!.one
+            let correctionForNoReverse = reverseThrustAdjustments[brakingAction]!.none
+
+            switch reverseThrust {
+                case .two: break
+                case .one: correctedDistances[brakingAction] = distance + correctionForOneReverser
+                case .none : correctedDistances[brakingAction] = distance + correctionForNoReverse
+            }
+            
+        }
         
         return correctedDistances
         
@@ -131,6 +168,112 @@ class LandingDistanceCalculator {
     
     }
     
+    private static func applyWindCorrections(windAdjustments: [BrakingConfiguration : (head: Int, tail: Int)],
+                                             runway : Runway,
+                                             wind: (direction: Int, speed: Int),
+                                             distances: [BrakingConfiguration : Int]) -> [BrakingConfiguration : Int] {
+        
+        var correctedDistances = distances
+        
+        let windCorrections = calculateWindComponents(heading: runway.getOrientation(),
+                                                      windDirection: wind.direction,
+                                                      windSpeed: wind.speed)
+        
+        delegate?.didCalculateWindComponents(windComponents: windCorrections)
+        
+        for (brakingAction, distance) in correctedDistances {
+            let windCorrectionPer10KnotsHeadwind = Double(windAdjustments[brakingAction]!.head)
+            let windCorrectionPer10KnotsTailwind = Double(windAdjustments[brakingAction]!.tail)
+            let correctionPerKnotHeadwind = windCorrectionPer10KnotsHeadwind / 10.0
+            let correctionPerKnotTailwind = windCorrectionPer10KnotsTailwind / 10.0
+            
+            for windCorrection in windCorrections {
+                if windCorrection.component == .headwind {
+                    let correction = round(correctionPerKnotHeadwind * windCorrection.knots)
+                    correctedDistances[brakingAction] = distance + Int(correction)
+                }
+                else if windCorrection.component == .tailwind {
+                    let correction = round(correctionPerKnotTailwind) * windCorrection.knots
+                    correctedDistances[brakingAction] = distance + Int(correction)
+                }
+            }
+        }
+        
+        return correctedDistances
+        
+    }
+    
+    private static func applySlopeCorrections(slopeAdjustments: [BrakingConfiguration : (down: Int, up: Int)],
+                                              runway : Runway,
+                                              distances: [BrakingConfiguration : Int]) -> [BrakingConfiguration : Int] {
+        
+        var correctedDistances = distances
+        
+        for (brakingAction, distance) in correctedDistances {
+            
+            let correctionPerDegreeUpSlope = Double(slopeAdjustments[brakingAction]!.up)
+            let correctionsPerDegreeDownSlope = Double(slopeAdjustments[brakingAction]!.down)
+            
+            let slope = runway.getSlope()
+            
+            if slope == 0 { break }
+            
+            let correction = slope < 0 ? Int(round(correctionsPerDegreeDownSlope * abs(slope))) : Int(round(correctionPerDegreeUpSlope * slope))
+            
+            correctedDistances[brakingAction] = distance + correction
+            
+        }
+        
+        return correctedDistances
+        
+    }
+    
+    private static func applyTempCorrections(tempAdjustments: [BrakingConfiguration : (above: Int, below: Int)],
+                                             runway : Runway,
+                                             temperature: Int,
+                                             distances: [BrakingConfiguration : Int]) -> [BrakingConfiguration : Int] {
+        var correctedDistances = distances
+        
+        for (brakingAction, distance) in correctedDistances {
+            let correctionPer10DegreesAboveISA = Double(tempAdjustments[brakingAction]!.above)
+            let correctionPer10DegreesBelowISA = Double(tempAdjustments[brakingAction]!.below)
+            let correctionPerDegreeAboveISA = correctionPer10DegreesAboveISA / 10.0
+            let correctionPerDegreeBelowISA = correctionPer10DegreesBelowISA / 10.0
+            
+            // ISA is 15ºC at sea level and changes by 2ºC per 1,000ft
+            // so ISA temperature for elevation is elevation / 1000 * 3
+            let elevation = runway.getElevationFeet()
+            
+            
+            let isaTempAtElevation: Int
+            if elevation == 0 {
+                isaTempAtElevation = 15
+            } else {
+                isaTempAtElevation = 15 - ( runway.getElevationFeet() / 1000 * 2 )
+            }
+            
+            // if +ve then we are above ISA and vise versa
+            let isaDivergence = temperature - isaTempAtElevation
+            
+            if isaDivergence > 0 {
+                // apply positive correction
+                let correction = correctionPerDegreeAboveISA * Double(isaDivergence)
+                correctedDistances[brakingAction] = distance + Int(round(correction))
+            }
+            else if isaDivergence < 0 {
+                // apply negative correction
+                let correction = correctionPerDegreeBelowISA * Double(isaDivergence)
+                correctedDistances[brakingAction] = distance - Int(round(correction))
+            }
+            else {
+                break // no correction necessary
+            }
+            
+        }
+        
+        return correctedDistances
+    }
+    
     private static func  calculateWindComponents(heading: Int, windDirection: Int, windSpeed: Int) -> [(component: WindComponent, knots: Double)] {
         
         var results : [(component: WindComponent, knots: Double)] = []
@@ -143,27 +286,36 @@ class LandingDistanceCalculator {
         if angle > 180 {
             angle = 360 - angle
         }
-        
+        // if angle == 0, there is only a headwind component
         if angle == 0 {
+            let headwind = Double(windSpeed) * cosine(degrees: angle)
+            let headwindComponent = (WindComponent.headwind, abs(headwind))
+            results.append(headwindComponent)
+        }
+        // there is a headwind and crosswind
+        else if angle < 90 {
             let headwind = Double(windSpeed) * cosine(degrees: angle)
             let crosswind = Double(windSpeed) * sine(degrees: angle)
             
-            let headwindComponent = (WindComponent.headwind, abs(headwind))
-            let crosswindComponent = (WindComponent.crosswind, abs(crosswind))
+            let headWindComponent = (WindComponent.headwind, abs(headwind))
+            let crosswindCompoent = (WindComponent.crosswind, abs(crosswind))
             
-            results.append(headwindComponent)
-            results.append(crosswindComponent)
+            results.append(headWindComponent)
+            results.append(crosswindCompoent)
         }
+        // there is only a crosswind
         else if angle == 90 {
             let crosswind = Double(windSpeed) * sine(degrees: angle)
             let crosswindComponent = (WindComponent.crosswind, abs(crosswind))
             results.append(crosswindComponent)
         }
+        // there is only a tailwaind
         else if angle == 180 {
             let tailwind = Double(windSpeed) * cosine(degrees: angle)
             let tailwindComponent = (WindComponent.tailwind, abs(tailwind))
             results.append(tailwindComponent)
         }
+        // there is a tailwind and a crosswind
         else {
             let tailwind = Double(windSpeed) * cosine(degrees: angle)
             let crosswind = Double(windSpeed) * sine(degrees: angle)
@@ -177,6 +329,8 @@ class LandingDistanceCalculator {
         
         return results
     }
+    
+    
     
     private static func printDistancesToConsole(title: String, distances: [BrakingConfiguration : Int]) {
         print("\n\n\(title) : \n\n")

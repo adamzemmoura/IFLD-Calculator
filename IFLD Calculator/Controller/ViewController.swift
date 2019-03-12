@@ -54,6 +54,12 @@ class ViewController: UIViewController {
         }
     }
     
+    private var windComponents: [(component: WindComponent, knots: Double)]? = nil {
+        didSet {
+            updateUI()
+        }
+    }
+    
     private var userIsSearchingForAirport : Bool {
         get {
             return airportSearchText.count > 0
@@ -183,6 +189,16 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBOutlet weak var windComponentsBorderView: UIView! {
+        didSet {
+            applyBorderStyles(view: windComponentsBorderView)
+        }
+    }
+    
+    @IBOutlet weak var headwindComponentLabel: UILabel!
+    @IBOutlet weak var crosswindComponentLabel: UILabel!
+    @IBOutlet weak var tailwindComponentLabel: UILabel!
+    
     @IBOutlet weak var maxManualDistanceLabel: UILabel!
     @IBOutlet weak var maxAutobrakDistanceLabel: UILabel!
     @IBOutlet weak var autobrakeFourDistanceLabel: UILabel!
@@ -235,7 +251,7 @@ class ViewController: UIViewController {
         // set delegate on AirportDataStore to subscribe to updates on airports data model
         AirportDataStore.shared.delegate = self
         
-        
+        LandingDistanceCalculator.delegate = self
         
     }
     
@@ -259,6 +275,8 @@ class ViewController: UIViewController {
         
         updateLandingDistanceLabels()
         
+        updateWindComponentLabels()
+        
         syncInputControlsWithLandingDistanceInputModel()
         
         airportSelectionTableView.reloadData()
@@ -281,6 +299,23 @@ class ViewController: UIViewController {
         
 //        calculateLandingDistancesButton.isEnabled = landingDistanceInputData.containsAllRequiredInputs()
 //        calculateLandingDistancesButton.alpha = calculateLandingDistancesButton.isEnabled ? 1 : 0.5
+    }
+    
+    private func updateWindComponentLabels() {
+        
+        headwindComponentLabel.text = "---"
+        crosswindComponentLabel.text = "---"
+        tailwindComponentLabel.text = "---"
+        
+        if let components = windComponents {
+            for component in components {
+                switch component.component {
+                    case .headwind : headwindComponentLabel.text = "\(Int(round(component.knots)))kts"
+                    case .crosswind : crosswindComponentLabel.text = "\(Int(round(component.knots)))kts"
+                    case .tailwind : tailwindComponentLabel.text = "\(Int(round(component.knots)))kts"
+                }
+            }
+        }
     }
     
     private func updateLandingDistanceLabels() {
@@ -333,7 +368,13 @@ class ViewController: UIViewController {
         weightTextField.text = weightText
         
         // set the variant
-        variantSelectionTextField.text = landingDistanceInputData.aircraftVariant?.rawValue ?? ""
+        if let variantText = landingDistanceInputData.aircraftVariant?.rawValue {
+            let variantTextWithoutEngine = variantText.split(separator: " ").first!
+            variantSelectionTextField.text = String(variantTextWithoutEngine)
+        } else {
+            variantSelectionTextField.text = ""
+        }
+        
         
         // set the wind picker
         if let (windDirection, windSpeed) = landingDistanceInputData.wind {
@@ -386,10 +427,6 @@ class ViewController: UIViewController {
     }
     
     private func updateRunwayInfoUI() {
-        
-        runwayDistanceStack.isHidden = selectedRunway == nil
-        runwaySlopeStack.isHidden = selectedRunway == nil
-        runwayElevationStack.isHidden = selectedRunway == nil
         
         let runwayDistanceText = selectedRunway == nil ? "" : "\(selectedRunway!.getDistanceMeters())m"
         let runwaySlopeText = selectedRunway == nil ? "" : "\(selectedRunway!.getSlope())%"
@@ -738,3 +775,10 @@ extension ViewController: AirportDataStoreDelegate {
     
 }
 
+extension ViewController: LandingDistanceCalculatorDelegate {
+    
+    func didCalculateWindComponents(windComponents: [(component: WindComponent, knots: Double)]) {
+        self.windComponents = windComponents
+    }
+    
+}

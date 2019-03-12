@@ -10,6 +10,7 @@
 		543B0078223034E6007B3E31 /* LandingDistanceInputData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543B0077223034E5007B3E31 /* LandingDistanceInputData.swift */; };
 		543B007A2230884C007B3E31 /* LandingDistanceCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543B00792230884C007B3E31 /* LandingDistanceCalculator.swift */; };
 		543B007C22314229007B3E31 /* WindComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543B007B22314229007B3E31 /* WindComponent.swift */; };
+		543F51132236123100205C22 /* LandingDistanceTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543F51122236123100205C22 /* LandingDistanceTemplate.swift */; };
 		54472FFA22285CD400919DD1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54472FF922285CD400919DD1 /* AppDelegate.swift */; };
 		54472FFC22285CD400919DD1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54472FFB22285CD400919DD1 /* ViewController.swift */; };
 		54472FFF22285CD400919DD1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 54472FFD22285CD400919DD1 /* Main.storyboard */; };
@@ -49,6 +50,7 @@
 		543B0077223034E5007B3E31 /* LandingDistanceInputData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingDistanceInputData.swift; sourceTree = "<group>"; };
 		543B00792230884C007B3E31 /* LandingDistanceCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingDistanceCalculator.swift; sourceTree = "<group>"; };
 		543B007B22314229007B3E31 /* WindComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindComponent.swift; sourceTree = "<group>"; };
+		543F51122236123100205C22 /* LandingDistanceTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingDistanceTemplate.swift; sourceTree = "<group>"; };
 		54472FF622285CD400919DD1 /* IFLD Calculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IFLD Calculator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		54472FF922285CD400919DD1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		54472FFB22285CD400919DD1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -173,6 +175,7 @@
 				543B0077223034E5007B3E31 /* LandingDistanceInputData.swift */,
 				543B00792230884C007B3E31 /* LandingDistanceCalculator.swift */,
 				543B007B22314229007B3E31 /* WindComponent.swift */,
+				543F51122236123100205C22 /* LandingDistanceTemplate.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -402,6 +405,7 @@
 				543B007C22314229007B3E31 /* WindComponent.swift in Sources */,
 				54473031222AEB1100919DD1 /* AircraftType.swift in Sources */,
 				5447302022285E4100919DD1 /* LandingPerformanceData.swift in Sources */,
+				543F51132236123100205C22 /* LandingDistanceTemplate.swift in Sources */,
 				54D8DADF222D8A78003F34EA /* Airport.swift in Sources */,
 				54473022222862BF00919DD1 /* BrakingConfiguration.swift in Sources */,
 				54D8DADD222D8A20003F34EA /* Runway.swift in Sources */,
